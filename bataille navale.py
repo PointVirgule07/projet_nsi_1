@@ -66,22 +66,25 @@ def touche_ou_plouf(G, emplacement, dic):
         G[x][y] = "O"
         return False
 
-while nombre_bateaux_J1["pc"][0] != 0 or nombre_bateaux_J1["c"][0] != 0 or nombre_bateaux_J1["ct"][0] != 0 or nombre_bateaux_J1["t"][0] != 0:
-    print("\033[0;32m\nJoueur 1\033[0;0m\n")
-    affiche(G1)
-    emplacement = input("Entrez l'emplacement du bateau: ")
-    print(f"Les bateaux disponibles sont: PC {nombre_bateaux_J1['pc'][1]}, C {nombre_bateaux_J1['c'][1]}, CT {nombre_bateaux_J1['ct'][1]},  {nombre_bateaux_J1['t'][1]}")
-    bateau = input("Entrez le type de bateau: ").lower()
-    direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
-    placeBateau(G1, emplacement, bateau, direction, nombre_bateaux_J1)
+def début_jeu():
+    while nombre_bateaux_J1["pc"][0] != 0 or nombre_bateaux_J1["c"][0] != 0 or nombre_bateaux_J1["ct"][0] != 0 or nombre_bateaux_J1["t"][0] != 0:
+        print("\033[0;32m\nJoueur 1\033[0;0m\n")
+        affiche(G1)
+        emplacement = input("Entrez l'emplacement du bateau: ")
+        print(f"Les bateaux disponibles sont: PC {nombre_bateaux_J1['pc'][1]}, C {nombre_bateaux_J1['c'][1]}, CT {nombre_bateaux_J1['ct'][1]}, T {nombre_bateaux_J1['t'][1]}")
+        bateau = input("Entrez le type de bateau: ").lower()
+        direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
+        placeBateau(G1, emplacement, bateau, direction, nombre_bateaux_J1)
 
-while nombre_bateaux_J2["pc"][0] != 0 or nombre_bateaux_J2["c"][0] != 0 or nombre_bateaux_J2["ct"][0] != 0 or nombre_bateaux_J2["t"][0] != 0:
-    print("\033[0;32m\nJoueur 2\033[0;0m\n")
-    affiche(G2)
-    emplacement = input("Entrez l'emplacement du bateau: ")
-    print(f"Les bateaux disponibles sont: pc {nombre_bateaux_J2['pc'][1]}, c {nombre_bateaux_J2['c'][1]}, ct {nombre_bateaux_J2['ct'][1]}, t {nombre_bateaux_J2['t'][1]}")
-    bateau = input("Entrez le type de bateau: ")
-    direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
-    placeBateau(G2, emplacement, bateau, direction, nombre_bateaux_J2)
+    while nombre_bateaux_J2["pc"][0] != 0 or nombre_bateaux_J2["c"][0] != 0 or nombre_bateaux_J2["ct"][0] != 0 or nombre_bateaux_J2["t"][0] != 0:
+        print("\033[0;32m\nJoueur 2\033[0;0m\n")
+        affiche(G2)
+        emplacement = input("Entrez l'emplacement du bateau: ")
+        print(f"Les bateaux disponibles sont: PC {nombre_bateaux_J2['pc'][1]}, C {nombre_bateaux_J2['c'][1]}, CT {nombre_bateaux_J2['ct'][1]}, T {nombre_bateaux_J2['t'][1]}")
+        bateau = input("Entrez le type de bateau: ")
+        direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
+        placeBateau(G2, emplacement, bateau, direction, nombre_bateaux_J2)
+
+
 
 
