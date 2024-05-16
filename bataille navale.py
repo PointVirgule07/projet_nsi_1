@@ -84,7 +84,6 @@ def début_jeu():
         bateau = input("Entrez le type de bateau: ")
         direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
         placeBateau(G2, emplacement, bateau, direction, nombre_bateaux_J2)
-
-
-
+    
+début_jeu()
 
