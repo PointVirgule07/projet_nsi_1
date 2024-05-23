@@ -13,7 +13,7 @@ dic = {chr(65+i)+str(j): (i,j) for i in range(10) for j in range(10)}
 def affiche(G):
     """affiche la grille de jeu de la bataille navale
     G: list(list(str)) -> grille de jeu"""
-    print("  A B c D E F G H I J")
+    print("  A B C D E F G H I J")
     for i in range(10):
         print(i, end=' ')
         for j in range(10):
