@@ -1,17 +1,19 @@
-"""génère la grille de jeu de la bataille navale"""
+# Génère la grille de jeu de la bataille navale
 G1 = [["." for _ in range(10)] for _ in range(10)]
+G1_bis = [["." for _ in range(10)] for _ in range(10)]
 G2 = [["." for _ in range(10)] for _ in range(10)]
+G2_bis = [["." for _ in range(10)] for _ in range(10)]
 
-"""dictionnaire pour convertir les abréviations en nombre de cases occupées par le bateau et le nombre de bateaux de chaque types.
-   (nombre de bateaux, nombre de cases occupées par le bateau)"""
-nombre_bateaux_J1 = {"pc": (1,5), "c": (1,4), "ct": (2,3), "t": (1,2)}
-nombre_bateaux_J2 = {"pc": (1,5), "c": (1,4), "ct": (2,3), "t": (1,2)}
+# Dictionnaire pour convertir les abréviations en nombre de cases occupées par le bateau et le nombre de bateaux de chaque types.
+# (nombre de bateaux, nombre de cases occupées par le bateau)
+nombre_bateaux_J1 = {"pc": (1, 5), "c": (1, 4), "ct": (2, 3), "t": (1, 2)}
+nombre_bateaux_J2 = {"pc": (1, 5), "c": (1, 4), "ct": (2, 3), "t": (1, 2)}
 
-"""transforme le nom des cases en leurs coordonées (x,y) (A0 -> (0,0), A1 -> (0,1), ..., J9 -> (9,9)"""
-dic = {chr(65+i)+str(j): (i,j) for i in range(10) for j in range(10)}
+# Transforme le nom des cases en leurs coordonnées (x,y) (A0 -> (0,0), A1 -> (0,1), ..., J9 -> (9,9))
+dic = {chr(97 + i) + str(j): (i, j) for i in range(10) for j in range(10)}
 
 def affiche(G):
-    """affiche la grille de jeu de la bataille navale
+    """Affiche la grille de jeu de la bataille navale
     G: list(list(str)) -> grille de jeu"""
     print("  A B C D E F G H I J")
     for i in range(10):
@@ -21,27 +23,30 @@ def affiche(G):
         print()
 
 def placeBateau(G, emplacement, bateau, direction, nombre_bateaux):
-    """place un bateau sur la grille de jeu
+    """Place un bateau sur la grille de jeu
     G: list(list(str)) -> grille de jeu
     emplacement: str -> emplacement du bateau
     bateau: str -> type de bateau
     direction: str -> direction du bateau
     nombre_bateaux: dict -> dictionnaire des bateaux
     return: bool -> True si le bateau a été placé, False sinon"""
-    taille = nombre_bateaux.get(bateau, (0, 0))[1]
-    x, y = dic.get(emplacement, (0, 0))
+    taille = nombre_bateaux[bateau][1]
+    if emplacement not in dic:
+        print("\033[1;31mEmplacement invalide\033[1;37m")
+        return False
+    x, y = dic[emplacement]
 
-    if bateau not in nombre_bateaux or G[y][x] != "." or not estDansGrille(x, y) or direction not in {"H", "V"} or nombre_bateaux[bateau][0] == 0 or (direction == "V" and y + taille > 10) or (direction == "H" and x + taille > 10):
+    if bateau not in nombre_bateaux or G[y][x] != "." or not estDansGrille(x, y) or direction not in {"h", "v"} or nombre_bateaux[bateau][0] == 0 or (direction == "v" and y + taille > 10) or (direction == "h" and x + taille > 10):
         print("\033[1;31mPlacement invalide\033[1;37m")
         return False
 
     for i in range(taille):
-        if (direction == "V" and G[y + i][x] != ".") or (direction == "H" and G[y][x + i] != "."):
+        if (direction == "v" and G[y + i][x] != ".") or (direction == "h" and G[y][x + i] != "."):
             print("\033[1;31mCase déjà occupée\033[1;37m")
             return False
 
     for i in range(taille):
-        if direction == "V":
+        if direction == "v":
             G[y + i][x] = "B"
         else:
             G[y][x + i] = "B"
@@ -49,44 +54,50 @@ def placeBateau(G, emplacement, bateau, direction, nombre_bateaux):
     return True
 
 def estDansGrille(x, y):
-    """vérifie si les coordonnées sont dans la grille"""
-    return 0<=x<10 and 0<=y<10
+    """Vérifie si les coordonnées sont dans la grille"""
+    return 0 <= x < 10 and 0 <= y < 10
 
-def touche_ou_plouf(G, emplacement, dic):
-    """vérifie si la case est occupée par un bateau
+def touche_ou_plouf(G, G_bis, emplacement, dic):
+    """Vérifie si la case est occupée par un bateau
     G: list(list(str)) -> grille de jeu
+    g_bis: list(list(str)) -> grille de tir
     emplacement: str -> emplacement de la case
     dic: dict -> dictionnaire des emplacements
     return: bool -> True si la case est occupée par un bateau, False sinon"""
-    x,y = dic[emplacement][0],dic[emplacement][1]
-    if G[x][y] == "B":
-        G[x][y] = "X"
+    if emplacement not in dic:
+        print("\033[1;31mEmplacement invalide\033[1;37m")
+        return False
+    x, y = dic[emplacement]
+    if G[y][x] == "B":
+        G[y][x] = "X"
+        G_bis[y][x] = "X"
         return True
     else:
-        G[x][y] = "O"
+        G[y][x] = "O"
+        G_bis[y][x] = "O"
         return False
 
 def début_jeu():
-    while nombre_bateaux_J1["pc"][0] != 0 or nombre_bateaux_J1["c"][0] != 0 or nombre_bateaux_J1["ct"][0] != 0 or nombre_bateaux_J1["t"][0] != 0:
+    while any(nombre_bateaux_J1[b][0] > 0 for b in nombre_bateaux_J1):
         print("\033[0;32m\nJoueur 1\033[0;0m\n")
         affiche(G1)
-        emplacement = input("Entrez l'emplacement du bateau: ")
-        print(f"Les bateaux disponibles sont: PC {nombre_bateaux_J1['pc'][1]}, C {nombre_bateaux_J1['c'][1]}, CT {nombre_bateaux_J1['ct'][1]}, T {nombre_bateaux_J1['t'][1]}")
+        emplacement = input("Entrez l'emplacement du bateau: ").lower()
+        print(f"Les bateaux disponibles sont: PC {nombre_bateaux_J1['pc'][0]}, C {nombre_bateaux_J1['c'][0]}, CT {nombre_bateaux_J1['ct'][0]}, T {nombre_bateaux_J1['t'][0]}")
         bateau = input("Entrez le type de bateau: ").lower()
-        direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
+        direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ").lower()
         placeBateau(G1, emplacement, bateau, direction, nombre_bateaux_J1)
 
-    while nombre_bateaux_J2["pc"][0] != 0 or nombre_bateaux_J2["c"][0] != 0 or nombre_bateaux_J2["ct"][0] != 0 or nombre_bateaux_J2["t"][0] != 0:
+    while any(nombre_bateaux_J2[b][0] > 0 for b in nombre_bateaux_J2):
         print("\033[0;32m\nJoueur 2\033[0;0m\n")
         affiche(G2)
-        emplacement = input("Entrez l'emplacement du bateau: ")
-        print(f"Les bateaux disponibles sont: PC {nombre_bateaux_J2['pc'][1]}, C {nombre_bateaux_J2['c'][1]}, CT {nombre_bateaux_J2['ct'][1]}, T {nombre_bateaux_J2['t'][1]}")
-        bateau = input("Entrez le type de bateau: ")
-        direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
+        emplacement = input("Entrez l'emplacement du bateau: ").lower()
+        print(f"Les bateaux disponibles sont: PC {nombre_bateaux_J2['pc'][0]}, C {nombre_bateaux_J2['c'][0]}, CT {nombre_bateaux_J2['ct'][0]}, T {nombre_bateaux_J2['t'][0]}")
+        bateau = input("Entrez le type de bateau: ").lower()
+        direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ").lower()
         placeBateau(G2, emplacement, bateau, direction, nombre_bateaux_J2)
 
 def vict(G):
-    """vérifie si un joueur a gagné
+    """Vérifie si un joueur a gagné
     G: list(list(str)) -> grille de jeu
     return: bool -> True si un joueur a gagné, False sinon"""
     for i in range(10):
@@ -95,23 +106,25 @@ def vict(G):
                 return False
     return True
 
-
-######################### main #########################
-
+# Main
 début_jeu()
 while True:
-    print("\033[0;32m\nJoueur 1\033[0;0m\n")
+    print("\033[0;32m\n Grille_Joueur 1\033[0;0m\n")
     affiche(G1)
-    emplacement = input("Entrez l'emplacement de la case: ")
-    touche_ou_plouf(G2, emplacement, dic)
+    print("\033[0;32m\n Grille_De_Tir\033[0;0m\n")
+    affiche(G1_bis)
+    emplacement = input("Entrez l'emplacement de la case: ").lower()
+    touche_ou_plouf(G2,G1_bis,emplacement, dic)
     if vict(G2):
         print("Le joueur 1 a gagné")
         break
 
-    print("\033[0;32m\nJoueur 2\033[0;0m\n")
+    print("\033[0;32m\nGrille_Joueur 2\033[0;0m\n")
     affiche(G2)
-    emplacement = input("Entrez l'emplacement de la case: ")
-    touche_ou_plouf(G1, emplacement, dic)
+    print("\033[0;32m\nGrille_De_Tir\033[0;0m\n")
+    affiche(G2_bis)
+    emplacement = input("Entrez l'emplacement de la case: ").lower()
+    touche_ou_plouf(G1,G2_bis,emplacement, dic)
     if vict(G1):
         print("Le joueur 2 a gagné")
         break
