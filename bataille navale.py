@@ -84,6 +84,34 @@ def début_jeu():
         bateau = input("Entrez le type de bateau: ")
         direction = input("Entrez la direction du bateau (H pour horizontal, V pour vertical): ")
         placeBateau(G2, emplacement, bateau, direction, nombre_bateaux_J2)
-    
-début_jeu()
 
+def vict(G):
+    """vérifie si un joueur a gagné
+    G: list(list(str)) -> grille de jeu
+    return: bool -> True si un joueur a gagné, False sinon"""
+    for i in range(10):
+        for j in range(10):
+            if G[i][j] == "B":
+                return False
+    return True
+
+
+######################### main #########################
+
+début_jeu()
+while True:
+    print("\033[0;32m\nJoueur 1\033[0;0m\n")
+    affiche(G1)
+    emplacement = input("Entrez l'emplacement de la case: ")
+    touche_ou_plouf(G2, emplacement, dic)
+    if vict(G2):
+        print("Le joueur 1 a gagné")
+        break
+
+    print("\033[0;32m\nJoueur 2\033[0;0m\n")
+    affiche(G2)
+    emplacement = input("Entrez l'emplacement de la case: ")
+    touche_ou_plouf(G1, emplacement, dic)
+    if vict(G1):
+        print("Le joueur 2 a gagné")
+        break
