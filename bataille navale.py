@@ -116,7 +116,7 @@ while True:
     emplacement = input("Entrez l'emplacement de la case: ").lower()
     touche_ou_plouf(G2,G1_bis,emplacement, dic)
     if vict(G2):
-        print("Le joueur 1 a gagné")
+        print("\033[0;32m\n Le joueur 1 a gagné\033[0;0m\n")
         break
 
     print("\033[0;32m\nGrille_Joueur 2\033[0;0m\n")
@@ -126,5 +126,5 @@ while True:
     emplacement = input("Entrez l'emplacement de la case: ").lower()
     touche_ou_plouf(G1,G2_bis,emplacement, dic)
     if vict(G1):
-        print("Le joueur 2 a gagné")
+        print("\033[0;32m\n Le joueur 2 a gagné\033[0;0m\n")
         break
